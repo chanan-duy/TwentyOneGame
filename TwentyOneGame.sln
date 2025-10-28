@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwentyOneGame", "TwentyOneGame\TwentyOneGame.csproj", "{83C432D3-78EC-4DAB-8B4C-F463300D1C2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwentyOneGame.Test", "TwentyOneGame.Test\TwentyOneGame.Test.csproj", "{D7727B3A-1ECC-482E-8E4E-541B8CBD54A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{83C432D3-78EC-4DAB-8B4C-F463300D1C2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83C432D3-78EC-4DAB-8B4C-F463300D1C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83C432D3-78EC-4DAB-8B4C-F463300D1C2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7727B3A-1ECC-482E-8E4E-541B8CBD54A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7727B3A-1ECC-482E-8E4E-541B8CBD54A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7727B3A-1ECC-482E-8E4E-541B8CBD54A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7727B3A-1ECC-482E-8E4E-541B8CBD54A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
