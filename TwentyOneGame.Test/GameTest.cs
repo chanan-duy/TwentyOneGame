@@ -2,22 +2,27 @@
 
 public class MockUserIO : IUserIO
 {
-    private readonly Queue<string> _inputs = new();
-    private readonly List<string> _outputs = [];
+    public readonly Queue<string> Inputs = new();
+    public readonly List<string> Outputs = [];
 
     public void PrintOut(string message)
     {
-        _outputs.Add(message);
+        Outputs.Add(message);
     }
 
     public void PrintNewLine()
     {
-        _outputs.Add(Environment.NewLine);
+        Outputs.Add(Environment.NewLine);
     }
 
     public string Read()
     {
-        return _inputs.Count > 0 ? _inputs.Dequeue() : string.Empty;
+        return Inputs.Count > 0 ? Inputs.Dequeue() : string.Empty;
+    }
+
+    public void EnqueueInput(string s)
+    {
+        Inputs.Enqueue(s);
     }
 }
 
@@ -34,8 +39,17 @@ public class GameTest
         _game = new Game(_mockIo);
     }
 
+    private void SetupTestDeck(IEnumerable<Card> cards)
+    {
+        var cardArray = cards.ToArray();
+        for (var i = 0; i < cardArray.Length; i++)
+        {
+            _game.Deck.Cards[i] = cardArray[i];
+        }
+    }
+
     [Test]
-    public void InitHands_DealsTwoCardsToUserAndDealer()
+    public void InitGameTest()
     {
         _game.InitHands();
 
@@ -48,7 +62,7 @@ public class GameTest
     }
 
     [TestCaseSource(nameof(ScoreTestData))]
-    public void CalculateScore_WithVariousHands_ReturnsCorrectScore(List<Card> hand, int expectedScore)
+    public void ScoreTest(List<Card> hand, int expectedScore)
     {
         var score = Game.CalculateScore(hand);
 
@@ -66,7 +80,7 @@ public class GameTest
     }
 
     [Test]
-    public void RecalculateState_UpdatesUserAndDealerScores()
+    public void RecalculateStateTest()
     {
         _game.UserHand.Add(new Card(Suit.Clubs, Rank.Ten));
         _game.UserHand.Add(new Card(Suit.Clubs, Rank.Eight));
@@ -79,6 +93,101 @@ public class GameTest
         {
             Assert.That(_game.UserScore, Is.EqualTo(18));
             Assert.That(_game.DealerScore, Is.EqualTo(5));
+        });
+    }
+
+    [Test]
+    public void BustedDealerWinsTest()
+    {
+        SetupTestDeck([
+            new Card(Suit.Hearts, Rank.Ten),
+            new Card(Suit.Hearts, Rank.Six),
+            new Card(Suit.Clubs, Rank.Eight),
+            new Card(Suit.Clubs, Rank.Six),
+            new Card(Suit.Spades, Rank.Seven),
+        ]);
+        _mockIo.EnqueueInput("h");
+
+        _game.Start();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_game.UserScore, Is.EqualTo(25));
+            Assert.That(_game.DealerScore, Is.EqualTo(12));
+            Assert.That(_game.DealerHand, Has.Count.EqualTo(2));
+
+            var output = string.Join(" ", _mockIo.Outputs);
+            Assert.That(output, Does.Contain("You busted. Dealer wins"));
+        });
+    }
+
+    [Test]
+    public void PlayerStandsDealerBustsTest()
+    {
+        SetupTestDeck([
+            new Card(Suit.Hearts, Rank.Ten),
+            new Card(Suit.Diamonds, Rank.Ten),
+            new Card(Suit.Clubs, Rank.Nine),
+            new Card(Suit.Clubs, Rank.Six),
+            new Card(Suit.Spades, Rank.Eight),
+        ]);
+        _mockIo.EnqueueInput("s");
+
+        _game.Start();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_game.UserScore, Is.EqualTo(19));
+            Assert.That(_game.DealerScore, Is.EqualTo(24));
+            Assert.That(_game.DealerHand, Has.Count.EqualTo(3));
+
+            var output = string.Join(" ", _mockIo.Outputs);
+            Assert.That(output, Does.Contain("Dealer busted. You win"));
+        });
+    }
+
+    [Test]
+    public void PlayerWinsTest()
+    {
+        SetupTestDeck([
+            new Card(Suit.Hearts, Rank.Ace),
+            new Card(Suit.Diamonds, Rank.Ten),
+            new Card(Suit.Clubs, Rank.Ten),
+            new Card(Suit.Clubs, Rank.Nine),
+        ]);
+
+        _game.Start();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_game.UserScore, Is.EqualTo(21));
+            Assert.That(_game.DealerScore, Is.EqualTo(19));
+
+            var output = string.Join(" ", _mockIo.Outputs);
+            Assert.That(output, Does.Contain("You win"));
+        });
+    }
+
+    [Test]
+    public void TieTest()
+    {
+        SetupTestDeck([
+            new Card(Suit.Hearts, Rank.Ten),
+            new Card(Suit.Diamonds, Rank.Ten),
+            new Card(Suit.Clubs, Rank.Nine),
+            new Card(Suit.Diamonds, Rank.Nine),
+        ]);
+        _mockIo.EnqueueInput("s");
+
+        _game.Start();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_game.UserScore, Is.EqualTo(19));
+            Assert.That(_game.DealerScore, Is.EqualTo(19));
+
+            var output = string.Join(" ", _mockIo.Outputs);
+            Assert.That(output, Does.Contain("A tie"));
         });
     }
 }
