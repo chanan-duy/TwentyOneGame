@@ -1,6 +1,6 @@
 # TwentyOneGame
 
-<img width="1294" height="395" alt="image" src="https://github.com/user-attachments/assets/6e4bbced-fc52-4c31-9238-ee09c45cab48" />
+<img width="1312" height="463" alt="image" src="https://github.com/user-attachments/assets/3111e6f7-aa70-4412-8255-03384242c141" />
 
 ## Result Out
 
