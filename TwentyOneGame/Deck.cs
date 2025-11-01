@@ -4,13 +4,9 @@ namespace TwentyOneGame;
 
 public class Deck
 {
-    public const int DeckSize = 4 * 9;
-    public readonly Card[] Cards;
-
-    public Deck()
-    {
-        Cards = new Card[DeckSize];
-    }
+    private const int DeckSize = 4 * 9;
+    public readonly Card[] Cards = new Card[DeckSize];
+    public int CurrentIndex { get; private set; }
 
     public void FillCardsRandomized()
     {
@@ -24,5 +20,19 @@ public class Deck
         }
 
         RandomNumberGenerator.Shuffle(Cards.AsSpan());
+    }
+
+    public Card? TakeCard()
+    {
+        if (CurrentIndex >= Cards.Length)
+        {
+            return null;
+        }
+
+        var card = Cards[CurrentIndex];
+
+        CurrentIndex += 1;
+
+        return card;
     }
 }
