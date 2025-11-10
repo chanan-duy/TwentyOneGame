@@ -25,7 +25,7 @@ public class Game
         RecalculateState();
 
         _userIo.PrintOut("---");
-        _userIo.PrintOut($"Dealer is showing: {DealerHand[0].Rank} of {DealerHand[0].Suit}");
+        _userIo.PrintOut($"Dealer is showing: {DealerHand[0].Rank} of {DealerHand[0].Suit}, {GetPrettyCardValue(DealerHand[0])}");
         _userIo.PrintNewLine();
 
         _userIo.PrintOut("Your hand:");
@@ -178,9 +178,14 @@ public class Game
         for (var i = 0; i < cards.Count; i++)
         {
             var card = cards[i];
-            sb.AppendLine($"{i + 1}.  {card.Rank} of {card.Suit}, {card.Value}{(card.Rank == Rank.Ace ? "/1" : "")}");
+            sb.AppendLine($"{i + 1}.  {card.Rank} of {card.Suit}, {GetPrettyCardValue(card)}");
         }
 
         _userIo.PrintOut(sb.ToString());
+    }
+
+    private static string GetPrettyCardValue(Card card)
+    {
+        return $"{card.Value}{(card.Rank == Rank.Ace ? "/1" : "")}";
     }
 }
